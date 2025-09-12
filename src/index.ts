@@ -40,8 +40,10 @@ async function startServer() {
       throw new Error('Solana devnet connection failed or insufficient balance');
     }
 
+    const wsManager = new WebSocketManager(server);
+
     // Initialize order execution engine
-    const executionEngine = new OrderExecutionEngine(database, solanaManager);
+    const executionEngine = new OrderExecutionEngine(database, solanaManager, wsManager);
 
     // Initialize order queue with Redis
     const orderQueue = new OrderQueue(
@@ -51,10 +53,6 @@ async function startServer() {
       },
       executionEngine
     );
-
-    // Initialize WebSocket manager
-    const wsManager = new WebSocketManager(server);
-    executionEngine.setWebSocketManager(wsManager);
 
     // Register API routes
     await server.register(orderRoutes, {
