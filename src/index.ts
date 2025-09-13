@@ -50,6 +50,7 @@ async function startServer() {
       {
         host: REDIS_HOST,
         port: REDIS_PORT,
+        url: process.env.REDIS_URL
       },
       executionEngine
     );
