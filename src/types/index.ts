@@ -32,7 +32,6 @@ export enum OrderStatus {
 export interface DexQuote {
   dex: string;
   price: number;
-  fee: number;
 }
 
 export interface RouteResult {

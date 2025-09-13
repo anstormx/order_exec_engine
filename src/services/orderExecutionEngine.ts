@@ -1,21 +1,21 @@
 import { Order, OrderStatus, ExecutionResult, RouteResult } from '../types';
 import { MockDexRouter } from './mockDexRouter';
-// import { dexRouter } from './dexRouter';
+import { dexRouter } from './dexRouter';
 import { SolanaConnectionManager } from './solanaConnection';
 import { Database } from '../database/connection';
 import { WebSocketManager } from './websocketManager';
-import { OrderExecutionError, DexRoutingError, retryWithBackoff } from '../utils/errorHandler';
+import { retryWithBackoff, sleep } from '../utils/errorHandler';
 
 export class OrderExecutionEngine {
-  // private dexRouter: dexRouter;
-  private dexRouter: MockDexRouter;
+  private dexRouter: dexRouter;
+  // private dexRouter: MockDexRouter;
   private database: Database;
   private wsManager: WebSocketManager;
 
   constructor(database: Database, solanaManager: SolanaConnectionManager, wsManager: WebSocketManager) {
     this.database = database;
-    // this.dexRouter = new dexRouter(solanaManager);
-    this.dexRouter = new MockDexRouter();
+    this.dexRouter = new dexRouter(solanaManager);
+    // this.dexRouter = new MockDexRouter();
     this.wsManager = wsManager;
 
     console.log('Order execution engine initialized');
@@ -91,9 +91,8 @@ export class OrderExecutionEngine {
       return routeResult;
     } catch (error) {
       console.error(`Routing failed for order ${order.id}:`, error);
-      throw new DexRoutingError(
-        `DEX routing failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        { orderId: order.id, tokenPair: `${order.tokenIn}/${order.tokenOut}` }
+      throw new Error(
+        `DEX routing failed for order ${order.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -103,7 +102,7 @@ export class OrderExecutionEngine {
    */
   private async buildTransaction(order: Order): Promise<void> {
     console.log(`Building transaction for order ${order.id}`);
-    await this.sleep(500 + Math.random() * 500);
+    await sleep(500 + Math.random() * 500);
     console.log(`Transaction built for order ${order.id}`);
   }
 
@@ -198,12 +197,5 @@ export class OrderExecutionEngine {
     }
 
     return { isValid: true };
-  }
-
-  /**
-   * Utility function for delays
-   */
-  private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
