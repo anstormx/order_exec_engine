@@ -11,10 +11,11 @@ import { orderRoutes } from './routes/orders';
 // Load environment variables
 dotenv.config();
 
-const PORT = parseInt(process.env.PORT || '3000');
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/eterna_orders';
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379');
+const PORT = parseInt(process.env.PORT!);
+const DATABASE_URL = process.env.DATABASE_URL!;
+const REDIS_URL = process.env.REDIS_URL;
+const REDIS_HOST = process.env.REDIS_HOST!;
+const REDIS_PORT = parseInt(process.env.REDIS_PORT!);
 const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL!;
 const PRIVATE_KEY = process.env.PRIVATE_KEY!;
 
@@ -50,7 +51,7 @@ async function startServer() {
       {
         host: REDIS_HOST,
         port: REDIS_PORT,
-        url: process.env.REDIS_URL
+        url: REDIS_URL
       },
       executionEngine
     );
@@ -103,7 +104,7 @@ async function startServer() {
     });
 
     // Start server
-    await server.listen({ port: PORT, host: '127.0.0.1' });
+    await server.listen({ port: PORT, host: '0.0.0.0' });
 
     server.log.info(`Eterna Order Execution Engine started on port ${PORT}`);
     server.log.info('Available endpoints:');
