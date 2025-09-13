@@ -6,8 +6,7 @@ export const executeOrderSchema = {
         properties: {
             tokenIn: { type: 'string', minLength: 1 },
             tokenOut: { type: 'string', minLength: 1 },
-            amountIn: { type: 'number', minimum: 0.000001 },
-            slippage: { type: 'number', minimum: 0, maximum: 0.5, default: 0.01 },
+            amountIn: { type: 'number', minimum: 0 },
         }
     }
 };

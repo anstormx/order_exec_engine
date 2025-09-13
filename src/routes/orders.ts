@@ -26,7 +26,7 @@ export async function orderRoutes(
     schema: executeOrderSchema,
     handler: async (request: FastifyRequest<{ Body: OrderRequest }>, reply: FastifyReply) => {
       try {
-        const { tokenIn, tokenOut, amountIn, slippage = 0.01 } = request.body;
+        const { tokenIn, tokenOut, amountIn } = request.body;
 
         // Create order object
         const order: Order = {
@@ -35,7 +35,6 @@ export async function orderRoutes(
           tokenIn,
           tokenOut,
           amountIn,
-          slippage,
           status: OrderStatus.PENDING,
           retryCount: 0,
           createdAt: new Date(),

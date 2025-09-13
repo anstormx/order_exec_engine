@@ -40,7 +40,7 @@ async function startServer() {
       throw new Error('Solana devnet connection failed or insufficient balance');
     }
 
-    const wsManager = new WebSocketManager(server);
+    const wsManager = new WebSocketManager(server, database);
 
     // Initialize order execution engine
     const executionEngine = new OrderExecutionEngine(database, solanaManager, wsManager);
