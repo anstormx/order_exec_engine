@@ -10,20 +10,25 @@ export class OrderQueue {
   private executionEngine: OrderExecutionEngine;
 
   constructor(
-    redisConfig: { host: string; port: number },
+    redisConfig: { host: string; port: number; url?: string },
     executionEngine: OrderExecutionEngine
   ) {
-    this.redis = new Redis({
-      host: redisConfig.host,
-      port: redisConfig.port,
-      maxRetriesPerRequest: null,
-    });
+    // Use REDIS_URL if available (Railway), otherwise use host/port
+    if (redisConfig.url) {
+      this.redis = new Redis(redisConfig.url, {
+        maxRetriesPerRequest: null,
+      });
+    } else {
+      this.redis = new Redis({
+        host: redisConfig.host,
+        port: redisConfig.port,
+        maxRetriesPerRequest: null,
+      });
+    }
 
     this.queue = new Queue<QueueJobData>('order-execution', {
       connection: this.redis,
       defaultJobOptions: {
-        removeOnComplete: 100,
-        removeOnFail: 50,
         attempts: 3,
         backoff: {
           type: 'exponential',
