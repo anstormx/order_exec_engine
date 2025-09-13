@@ -12,7 +12,7 @@ export class SolanaConnectionManager {
     const privateKeyBytes = Buffer.from(privateKeyBase64, 'base64');
     this.wallet = Keypair.fromSecretKey(privateKeyBytes);
     
-    console.log(`Connected to Solana devnet: ${rpcUrl}`);
+    console.log(`Connected to Solana: ${rpcUrl}`);
     console.log(`Wallet address: ${this.wallet.publicKey.toString()}`);
   }
 
@@ -21,17 +21,17 @@ export class SolanaConnectionManager {
     return ethers.formatUnits(balance, 9); // Convert lamports to SOL
   }
 
-  async checkDevnetConnection(): Promise<boolean> {
+  async checkConnection(): Promise<boolean> {
     try {
       const version = await this.connection.getVersion();
-      console.log(`Solana devnet version: ${version['solana-core']}`);
+      console.log(`Solana version: ${version['solana-core']}`);
       
       const balance = await this.getBalance();
       console.log(`Wallet SOL balance: ${balance} SOL`);
       
       return true;
     } catch (error) {
-      console.error('Failed to connect to Solana devnet:', error);
+      console.error('Failed to connect to Solana:', error);
       return false;
     }
   }
