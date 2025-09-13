@@ -15,10 +15,14 @@ export class OrderQueue {
   ) {
     // Use REDIS_URL if available (Railway), otherwise use host/port
     if (redisConfig.url) {
+      console.log('Using REDIS_URL for connection:', redisConfig.url);
+
       this.redis = new Redis(redisConfig.url, {
         maxRetriesPerRequest: null,
       });
     } else {
+      console.log('Using host/port for Redis connection:', redisConfig.host, redisConfig.port);
+      
       this.redis = new Redis({
         host: redisConfig.host,
         port: redisConfig.port,
