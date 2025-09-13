@@ -1,4 +1,4 @@
-import { Order, OrderStatus, WebSocketMessage, ExecutionResult, RouteResult } from '../types';
+import { Order, OrderStatus, ExecutionResult, RouteResult } from '../types';
 import { MockDexRouter } from './mockDexRouter';
 // import { dexRouter } from './dexRouter';
 import { SolanaConnectionManager } from './solanaConnection';
@@ -85,14 +85,10 @@ export class OrderExecutionEngine {
             order.amountIn,
           );
         },
-        3, // max retries
-        1000, // base delay
-        10000 // max delay
       );
 
       console.log(`Order ${order.id} routed to ${routeResult.dex}: ${routeResult.routingReason}`);
       return routeResult;
-
     } catch (error) {
       console.error(`Routing failed for order ${order.id}:`, error);
       throw new DexRoutingError(
@@ -107,32 +103,8 @@ export class OrderExecutionEngine {
    */
   private async buildTransaction(order: Order): Promise<void> {
     console.log(`Building transaction for order ${order.id}`);
-
-    try {
-      await retryWithBackoff(
-        async () => {
-          // Simulate transaction building time
-          await this.sleep(500 + Math.random() * 500);
-
-          // Simulate occasional build failures (1% chance)
-          if (Math.random() < 0.01) {
-            throw new Error('Transaction building failed: Insufficient balance or invalid parameters');
-          }
-        },
-        2, // max retries for transaction building
-        500, // base delay
-        2000 // max delay
-      );
-
-      console.log(`Transaction built for order ${order.id}`);
-    } catch (error) {
-      throw new OrderExecutionError(
-        `Transaction building failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        500,
-        'TRANSACTION_BUILD_FAILED',
-        { orderId: order.id }
-      );
-    }
+    await this.sleep(500 + Math.random() * 500);
+    console.log(`Transaction built for order ${order.id}`);
   }
 
   /**
@@ -151,7 +123,6 @@ export class OrderExecutionEngine {
       }
 
       return result;
-
     } catch (error) {
       console.error(`Execution error for order ${order.id}:`, error);
       return {
@@ -186,23 +157,18 @@ export class OrderExecutionEngine {
       });
 
       // Send WebSocket update
-      if (this.wsManager) {
-        const wsMessage: WebSocketMessage = {
-          orderId,
-          status,
-          timestamp: new Date(),
-          data: {
-            txHash: additionalData?.txHash,
-            error: additionalData?.errorMessage,
-            routeResult: additionalData?.routeResult
-          }
-        };
-
-        this.wsManager.broadcastOrderUpdate(wsMessage);
-      }
+      this.wsManager.broadcastOrderUpdate({
+        orderId,
+        status,
+        timestamp: new Date(),
+        data: {
+          txHash: additionalData?.txHash,
+          error: additionalData?.errorMessage,
+          routeResult: additionalData?.routeResult
+        }
+      });
 
       console.log(`Order ${orderId} status updated to: ${status}`);
-
     } catch (error) {
       console.error(`Failed to update order ${orderId} status:`, error);
       throw error;
@@ -233,7 +199,7 @@ export class OrderExecutionEngine {
 
     return { isValid: true };
   }
-  
+
   /**
    * Utility function for delays
    */

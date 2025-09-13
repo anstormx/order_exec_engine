@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS orders (
   id               TEXT PRIMARY KEY,                              -- app-generated (uuid/nanoid)
   type             TEXT NOT NULL CHECK (type IN ('market','limit','sniper')),
-  token_in_mint    TEXT NOT NULL,                                 -- SPL mint address
-  token_out_mint   TEXT NOT NULL,                                 -- SPL mint address
+  token_in    TEXT NOT NULL,                                 -- token symbol
+  token_out   TEXT NOT NULL,                                 -- token symbol
   amount_in        BIGINT NOT NULL CHECK (amount_in > 0),         -- smallest units
   executed_amount  BIGINT,                                        -- fill on success (smallest units)
   status           TEXT NOT NULL CHECK (

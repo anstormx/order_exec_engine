@@ -14,26 +14,27 @@ function generateMockTxHash() {
 }
 
 export class MockDexRouter {
-    basePrice = 1.0;
+    basePriceInUsdc = 250;
+    basePriceInSol = 0.004;
     
-    async getRaydiumQuote() {
+    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: number) {
         // Simulate network delay
-        await sleep(200);
+        await sleep(200 + Math.random() * 100);
 
         // Return price with some variance
         return {
-            price: this.basePrice * (0.98 + Math.random() * 0.04),
+            price: tokenIn === "SOL" ? this.basePriceInUsdc * (0.98 + Math.random() * 0.04) : this.basePriceInSol * (0.98 + Math.random() * 0.04),
             fee: 0.003,
         };
     }
 
-    async getMeteoraQuote() {
+    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: number) {
         // Simulate network delay
-        await sleep(200);
+        await sleep(200 + Math.random() * 100);
 
         // Return price with some variance
         return {
-            price: this.basePrice * (0.97 + Math.random() * 0.05),
+            price: tokenIn === "SOL" ? this.basePriceInUsdc * (0.97 + Math.random() * 0.05) : this.basePriceInSol * (0.97 + Math.random() * 0.05),
             fee: 0.002,
         };
     }
@@ -41,8 +42,8 @@ export class MockDexRouter {
     async selectBestDex(tokenIn: string, tokenOut: string, amount: number) {
         // Get quotes from both DEXs
         const [raydiumQuote, meteoraQuote] = await Promise.all([
-            this.getRaydiumQuote(),
-            this.getMeteoraQuote()
+            this.getRaydiumQuote(tokenIn, tokenOut, amount),
+            this.getMeteoraQuote(tokenIn, tokenOut, amount)
         ]);
 
         // Calculate effective prices (after fees)
@@ -58,9 +59,8 @@ export class MockDexRouter {
         const selectedDex = isRaydiumBetter ? 'raydium' : 'meteora';
         const selectedQuote = isRaydiumBetter ? raydiumQuote : meteoraQuote;
         const outputDifference = Math.abs(raydiumOutput - meteoraOutput);
-        const percentageDifference = (outputDifference / Math.max(raydiumOutput, meteoraOutput)) * 100;
 
-        const reason = `${selectedDex} provides ${outputDifference.toFixed(6)} more ${tokenOut} (${percentageDifference.toFixed(2)}% better)`;
+        const reason = `${selectedDex} provides ${outputDifference.toFixed(6)} more ${tokenOut}`;
 
         console.log(`Routing Decision: ${reason}`);
 
@@ -70,7 +70,6 @@ export class MockDexRouter {
                 dex: selectedDex,
                 price: selectedQuote.price,
                 fee: selectedQuote.fee,
-                priceImpact: percentageDifference / 100
             },
             allQuotes: [
                 {
@@ -90,13 +89,12 @@ export class MockDexRouter {
 
     async executeSwap(dex: string, order: Order) {
         console.log(`Executing swap on ${dex.toUpperCase()}`);
-        console.log(`Order: ${order.amountIn} ${order.tokenIn} → ${order.tokenOut}`);
 
         // Simulate 2-3 second execution
         await sleep(2000 + Math.random() * 1000);
 
-        // Simulate occasional execution failures (5% chance)
-        if (Math.random() < 0.05) {
+        // Simulate occasional execution failures (2% chance)
+        if (Math.random() < 0.02) {
             console.log(`Swap failed`);
             return {
                 success: false,
@@ -109,9 +107,9 @@ export class MockDexRouter {
         let finalQuote;
 
         if (dex === 'raydium') {
-            finalQuote = await this.getRaydiumQuote();
+            finalQuote = await this.getRaydiumQuote(order.tokenIn, order.tokenOut, order.amountIn);
         } else if (dex === 'meteora') {
-            finalQuote = await this.getMeteoraQuote();
+            finalQuote = await this.getMeteoraQuote(order.tokenIn, order.tokenOut, order.amountIn);
         } else {
             throw new Error(`Unsupported DEX: ${dex}`);
         }
