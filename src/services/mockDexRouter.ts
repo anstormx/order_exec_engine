@@ -19,7 +19,7 @@ export class MockDexRouter {
     
     async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: string) {
         // Simulate network delay
-        await sleep(200 + Math.random() * 100);
+        await sleep(2000 + Math.random() * 1000);
 
         // Return price with some variance
         return {
@@ -30,7 +30,7 @@ export class MockDexRouter {
 
     async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: string) {
         // Simulate network delay
-        await sleep(200 + Math.random() * 100);
+        await sleep(2000 + Math.random() * 1000);
 
         // Return price with some variance
         return {
