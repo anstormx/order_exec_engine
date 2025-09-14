@@ -110,7 +110,6 @@ export class WebSocketManager {
       }));
       
       console.log(`Sent current status (${order.status}) for order ${orderId}`);
-      
     } catch (error) {
       console.error(`Failed to send current order status for ${orderId}:`, error);
       

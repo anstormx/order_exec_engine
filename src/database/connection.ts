@@ -35,7 +35,7 @@ export class Database {
       order.tokenOut,
       order.tokenInMint,
       order.tokenOutMint,
-      order.amountIn,
+      order.amountIn.toString(),
       order.status.toString(),
       order.retryCount,
       order.createdAt,
