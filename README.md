@@ -8,6 +8,10 @@ A high-performance DEX order execution engine for Solana that processes market o
 
 **Demo Video**: [YouTube Demo Link - Coming Soon]
 
+**USDC -> SOL**: https://solscan.io/tx/5Cykpk5KcfDRBxwM6qD5XXVepbR3i5q7kwiazmtMr5UwhxDY89bQrqEEdAYq1LxHJYrKzf2SYSARzcnjzqrYpi4t
+
+**SOL -> USDC**: https://solscan.io/tx/26ZL62Sz2Cina4Q2KRHec4ievDSDkQM6bN5iSiE4mbFAhriTBHwqE3rC9D7WejRcM9MHYbYmUEWHyyxtuvssgTMZ
+
 ## Table of Contents
 
 - [Features](#features)

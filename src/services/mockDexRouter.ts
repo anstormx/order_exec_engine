@@ -40,6 +40,8 @@ export class MockDexRouter {
     }
 
     async selectBestDex(tokenIn: string, tokenOut: string, amount: string) {
+        await sleep(5000 + Math.random() * 1000); // Simulate network delay to connect with websocket
+
         // Get quotes from both DEXs
         const [raydiumQuote, meteoraQuote] = await Promise.all([
             this.getRaydiumQuote(tokenIn, tokenOut, amount),
