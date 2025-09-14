@@ -17,7 +17,7 @@ export class MockDexRouter {
     basePriceInUsdc = 250;
     basePriceInSol = 0.004;
     
-    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: number) {
+    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: bigint) {
         // Simulate network delay
         await sleep(200 + Math.random() * 100);
 
@@ -28,7 +28,7 @@ export class MockDexRouter {
         };
     }
 
-    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: number) {
+    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: bigint) {
         // Simulate network delay
         await sleep(200 + Math.random() * 100);
 
@@ -39,7 +39,7 @@ export class MockDexRouter {
         };
     }
 
-    async selectBestDex(tokenIn: string, tokenOut: string, amount: number) {
+    async selectBestDex(tokenIn: string, tokenOut: string, amount: bigint) {
         // Get quotes from both DEXs
         const [raydiumQuote, meteoraQuote] = await Promise.all([
             this.getRaydiumQuote(tokenIn, tokenOut, amount),
@@ -51,14 +51,14 @@ export class MockDexRouter {
         const meteoraEffective = meteoraQuote.price * (1 - meteoraQuote.fee);
 
         // Calculate output amounts
-        const raydiumOutput = amount * raydiumEffective;
-        const meteoraOutput = amount * meteoraEffective;
+        const raydiumOutput = amount * BigInt(Math.floor(raydiumEffective));
+        const meteoraOutput = amount * BigInt(Math.floor(meteoraEffective));
 
         // Determine best DEX based on output amount
         const isRaydiumBetter = raydiumOutput > meteoraOutput;
         const selectedDex = isRaydiumBetter ? 'raydium' : 'meteora';
         const selectedQuote = isRaydiumBetter ? raydiumQuote : meteoraQuote;
-        const outputDifference = Math.abs(raydiumOutput - meteoraOutput);
+        const outputDifference = Math.abs(Number(raydiumOutput) - Number(meteoraOutput) );
 
         const reason = `${selectedDex} provides ${outputDifference.toFixed(6)} more ${tokenOut}`;
 
@@ -117,7 +117,7 @@ export class MockDexRouter {
         // Calculate final execution price with slippage (simulate 0-0.5% additional slippage)
         const slippageFactor = 1 - (Math.random() * 0.005);
         const finalPrice = finalQuote.price * slippageFactor;
-        const actualAmountOut = order.amountIn * finalPrice;
+        const actualAmountOut = order.amountIn * BigInt(finalPrice);
 
         console.log(`Swap completed`);
         console.log(`Transaction: ${txHash}`);
@@ -127,7 +127,7 @@ export class MockDexRouter {
             success: true,
             txHash,
             executedPrice: parseFloat(finalPrice.toFixed(6)),
-            actualAmountOut: parseFloat(actualAmountOut.toFixed(6))
+            actualAmountOut: parseFloat(Number(actualAmountOut).toFixed(6))
         };
     }
 }

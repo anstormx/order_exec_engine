@@ -7,6 +7,7 @@ import { OrderExecutionEngine } from '../services/orderExecutionEngine';
 import { executeOrderSchema } from '../models/schema';
 import { NATIVE_MINT } from '@solana/spl-token';
 import { TOKEN_MINTS } from '../services/dexRouter';
+import { ethers } from 'ethers';
 
 interface OrderRouteContext {
   database: Database;
@@ -38,7 +39,7 @@ export async function orderRoutes(
           tokenOut,
           tokenInMint: TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].mint,
           tokenOutMint: TOKEN_MINTS[tokenOut as keyof typeof TOKEN_MINTS].mint,
-          amountIn,
+          amountIn: ethers.parseUnits(amountIn.toString(), TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].decimals),
           status: OrderStatus.PENDING,
           retryCount: 0,
           createdAt: new Date(),

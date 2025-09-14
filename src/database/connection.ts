@@ -23,7 +23,7 @@ export class Database {
   async createOrder(order: Order): Promise<void> {
     const query = `
       INSERT INTO orders (
-        id, type, token_in, token_out, token_in_mint, token_out_mint, amount_in, 
+        id, type, token_in, token_out, token_in_mint, token_out_mint, amt_in, 
         status, retry_count, created_at, updated_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     `;

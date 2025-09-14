@@ -5,7 +5,7 @@ export interface Order {
   tokenOut: string;
   tokenInMint: string;
   tokenOutMint: string;
-  amountIn: number;
+  amountIn: bigint;
   status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;

@@ -83,7 +83,7 @@ export class dexRouter {
     /**
      * Get quote from Raydium
      */
-    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: number): Promise<DexQuote> {
+    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: bigint): Promise<DexQuote> {
         console.log(`Getting Raydium quote: ${amount} ${tokenIn} -> ${tokenOut}`);
 
         try {
@@ -112,7 +112,7 @@ export class dexRouter {
     /**
      * Get quote from Meteora
      */
-    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: number): Promise<DexQuote> {
+    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: bigint): Promise<DexQuote> {
         try {
             console.log(`Getting Meteora quote: ${amount} ${tokenIn} -> ${tokenOut}`);
 
@@ -141,7 +141,7 @@ export class dexRouter {
     /**
      * Route order to the best DEX
      */
-    async selectBestDex(tokenIn: string, tokenOut: string, amount: number): Promise<RouteResult> {
+    async selectBestDex(tokenIn: string, tokenOut: string, amount: bigint): Promise<RouteResult> {
         console.log(`Routing order: ${amount} ${tokenIn} -> ${tokenOut}`);
 
         await this.initialize();
@@ -219,9 +219,6 @@ export class dexRouter {
 
             const [baseReserve, quoteReserve, status] = [rpcData.baseReserve, rpcData.quoteReserve, rpcData.status.toNumber()]
 
-            const inputAmount = new BN(ethers.parseUnits(order.amountIn.toString(), inputToken.decimals))
-            console.log('Input amount:', inputAmount);
-
             // swap pool mintA for mintB
             const out = this.raydium.liquidity.computeAmountOut({
                 poolInfo: {
@@ -231,7 +228,7 @@ export class dexRouter {
                     status,
                     version: 4,
                 },
-                amountIn: inputAmount,
+                amountIn: new BN(order.amountIn),
                 mintIn: inputToken.mint,
                 mintOut: outputToken.mint,
                 slippage: 0.01, // range: 1 ~ 0.0001, means 100% ~ 0.01%
@@ -242,7 +239,7 @@ export class dexRouter {
             const { execute } = await this.raydium.liquidity.swap({
                 poolInfo,
                 poolKeys,
-                amountIn: inputAmount,
+                amountIn: new BN(order.amountIn),
                 amountOut: out.minAmountOut, // out.amountOut means amount 'without' slippage
                 fixedSide: 'in',
                 inputMint: inputToken.mint,
@@ -281,12 +278,12 @@ export class dexRouter {
             const priceQuote = this.meteora.getSwapQuote(new PublicKey(TOKEN_MINTS["SOL"].mint), new BN(ethers.parseUnits("1", 9)), 0);
             const usdcPerSol = parseFloat(ethers.formatUnits(priceQuote.swapOutAmount.toString(), 6));
 
-            const quote = this.meteora.getSwapQuote(new PublicKey(inputToken.mint), new BN(ethers.parseUnits(order.amountIn.toString(), inputToken.decimals)), 0.01);
+            const quote = this.meteora.getSwapQuote(new PublicKey(inputToken.mint), new BN(order.amountIn), 0.01);
 
             const swapTx = await this.meteora.swap(
                 this.solanaManager.wallet.publicKey,
                 new PublicKey(inputToken.mint),
-                new BN(ethers.parseUnits(order.amountIn.toString(), inputToken.decimals)),
+                new BN(order.amountIn),
                 new BN(0));
 
             swapTx.sign(this.solanaManager.wallet);
