@@ -1,6 +1,5 @@
 import { Pool, PoolClient } from 'pg';
 import { Order, OrderStatus } from '../types';
-import { ethers } from 'ethers';
 
 export class Database {
   private pool: Pool;
@@ -34,6 +33,8 @@ export class Database {
       order.type.toString(),
       order.tokenIn,
       order.tokenOut,
+      order.tokenInMint,
+      order.tokenOutMint,
       order.amountIn,
       order.status.toString(),
       order.retryCount,
