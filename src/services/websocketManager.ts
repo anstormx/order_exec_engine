@@ -77,24 +77,23 @@ export class WebSocketManager {
       
       if (!order) {
         // Order not found - send error message
-        const errorMessage: WebSocketMessage = {
+        socket.send(JSON.stringify({
           orderId,
-          status: 'failed' as any,
+          status: 'failed',
           timestamp: new Date(),
           data: { 
             error: 'Order not found',
             message: 'WebSocket connection established, but order does not exist'
           }
-        };
-        socket.send(JSON.stringify(errorMessage));
+        }));
         console.log(`Order ${orderId} not found - sent error message`);
         return;
       }
 
       // Send current order status
-      const statusMessage: WebSocketMessage = {
+      socket.send(JSON.stringify({
         orderId,
-        status: order.status as any,
+        status: order.status,
         timestamp: new Date(),
         data: {
           message: 'WebSocket connection established',
@@ -108,25 +107,23 @@ export class WebSocketManager {
           createdAt: order.createdAt,
           updatedAt: order.updatedAt
         }
-      };
+      }));
       
-      socket.send(JSON.stringify(statusMessage));
       console.log(`Sent current status (${order.status}) for order ${orderId}`);
       
     } catch (error) {
       console.error(`Failed to send current order status for ${orderId}:`, error);
       
       // Send fallback message
-      const fallbackMessage: WebSocketMessage = {
+      socket.send(JSON.stringify({
         orderId,
-        status: 'pending' as any,
+        status: 'failed',
         timestamp: new Date(),
         data: { 
           message: 'WebSocket connection established',
           error: 'Could not retrieve order status'
         }
-      };
-      socket.send(JSON.stringify(fallbackMessage));
+      }));
     }
   }
 

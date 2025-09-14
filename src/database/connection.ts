@@ -24,9 +24,9 @@ export class Database {
   async createOrder(order: Order): Promise<void> {
     const query = `
       INSERT INTO orders (
-        id, type, token_in_mint, token_out_mint, amount_in, 
+        id, type, token_in, token_out, token_in_mint, token_out_mint, amount_in, 
         status, retry_count, created_at, updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     `;
     
     const values = [
@@ -34,7 +34,7 @@ export class Database {
       order.type.toString(),
       order.tokenIn,
       order.tokenOut,
-      Math.floor(order.amountIn * 1e9), // Convert to smallest units (lamports for SOL)
+      order.amountIn,
       order.status.toString(),
       order.retryCount,
       order.createdAt,
@@ -102,9 +102,11 @@ export class Database {
     return {
       id: row.id,
       type: row.type,
-      tokenIn: row.token_in_mint,
-      tokenOut: row.token_out_mint,
-      amountIn: parseFloat(ethers.formatUnits(row.amount_in, 9)), // Convert from smallest units back to SOL
+      tokenIn: row.token_in,
+      tokenOut: row.token_out,
+      tokenInMint: row.token_in_mint,
+      tokenOutMint: row.token_out_mint,
+      amountIn: row.amount_in,
       status: row.status,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
@@ -114,30 +116,5 @@ export class Database {
       retryCount: row.retry_count,
       dex: row.dex
     };
-  }
-
-  async getActiveOrders(): Promise<Order[]> {
-    const query = `
-      SELECT * FROM orders 
-      WHERE status IN ('pending', 'routing', 'building', 'submitted') 
-      ORDER BY created_at ASC
-    `;
-    const result = await this.pool.query(query);
-    
-    return result.rows.map(row => ({
-      id: row.id,
-      type: row.type,
-      tokenIn: row.token_in_mint,
-      tokenOut: row.token_out_mint,
-      amountIn: parseFloat(ethers.formatUnits(row.amount_in, 9)), // Convert from smallest units back to SOL
-      status: row.status,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
-      executedAt: row.executed_at,
-      txHash: row.tx_hash,
-      errorMessage: row.error_message,
-      retryCount: row.retry_count,
-      dex: row.dex
-    }));
   }
 }

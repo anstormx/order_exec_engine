@@ -15,23 +15,22 @@ import { AmmImpl } from '@meteora-ag/dynamic-amm-sdk';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 
+export const TOKEN_MINTS = {
+    SOL: {
+        mint: NATIVE_MINT.toString(),
+        decimals: 9
+    },
+    USDC: {
+        mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
+        decimals: 6
+    }
+  };
+
 export class dexRouter {
     private solanaManager: SolanaConnectionManager;
     private initialized = false;
     private raydium: Raydium | null = null;
     private meteora: AmmImpl | null = null;
-
-    // Token mints with proper decimals
-    private readonly TOKEN_MINTS = {
-        SOL: {
-            mint: NATIVE_MINT.toString(),
-            decimals: 9
-        },
-        USDC: {
-            mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-            decimals: 6
-        }
-    };
 
     // Pool addresses as PublicKeys
     private readonly POOL_ADDRESSES = {
@@ -122,7 +121,7 @@ export class dexRouter {
             }
 
             // Get quote for 1 SOL input to get USDC output
-            const quote = this.meteora.getSwapQuote(new PublicKey(this.TOKEN_MINTS["SOL"].mint), new BN(ethers.parseUnits("1", 9)), 0);
+            const quote = this.meteora.getSwapQuote(new PublicKey(TOKEN_MINTS["SOL"].mint), new BN(ethers.parseUnits("1", 9)), 0);
             const usdcPerSol = parseFloat(ethers.formatUnits(quote.swapOutAmount.toString(), 6));
 
             const normalizedPrice = tokenIn === 'SOL' ? usdcPerSol : 1 / usdcPerSol;
@@ -207,8 +206,8 @@ export class dexRouter {
             throw new Error('Raydium SDK not initialized');
         }
 
-        const inputToken = this.TOKEN_MINTS[order.tokenIn as keyof typeof this.TOKEN_MINTS];
-        const outputToken = this.TOKEN_MINTS[order.tokenOut as keyof typeof this.TOKEN_MINTS];
+        const inputToken = TOKEN_MINTS[order.tokenIn as keyof typeof TOKEN_MINTS];
+        const outputToken = TOKEN_MINTS[order.tokenOut as keyof typeof TOKEN_MINTS];
         const poolId = this.POOL_ADDRESSES.raydium;
 
         try {
@@ -272,14 +271,14 @@ export class dexRouter {
      * Execute Meteora swap using real SDK
      */
     private async executeMeteorSwap(order: Order): Promise<ExecutionResult> {
-        const inputToken = this.TOKEN_MINTS[order.tokenIn as keyof typeof this.TOKEN_MINTS];
-        const outputToken = this.TOKEN_MINTS[order.tokenOut as keyof typeof this.TOKEN_MINTS];
+        const inputToken = TOKEN_MINTS[order.tokenIn as keyof typeof TOKEN_MINTS];
+        const outputToken = TOKEN_MINTS[order.tokenOut as keyof typeof TOKEN_MINTS];
 
         try {
             if (!this.meteora) {
                 throw new Error('Meteora SDK not initialized');
             }
-            const priceQuote = this.meteora.getSwapQuote(new PublicKey(this.TOKEN_MINTS["SOL"].mint), new BN(ethers.parseUnits("1", 9)), 0);
+            const priceQuote = this.meteora.getSwapQuote(new PublicKey(TOKEN_MINTS["SOL"].mint), new BN(ethers.parseUnits("1", 9)), 0);
             const usdcPerSol = parseFloat(ethers.formatUnits(priceQuote.swapOutAmount.toString(), 6));
 
             const quote = this.meteora.getSwapQuote(new PublicKey(inputToken.mint), new BN(ethers.parseUnits(order.amountIn.toString(), inputToken.decimals)), 0.01);

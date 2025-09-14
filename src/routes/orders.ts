@@ -5,6 +5,8 @@ import { Database } from '../database/connection';
 import { OrderQueue } from '../services/queue';
 import { OrderExecutionEngine } from '../services/orderExecutionEngine';
 import { executeOrderSchema } from '../models/schema';
+import { NATIVE_MINT } from '@solana/spl-token';
+import { TOKEN_MINTS } from '../services/dexRouter';
 
 interface OrderRouteContext {
   database: Database;
@@ -34,6 +36,8 @@ export async function orderRoutes(
           type: OrderType.MARKET,
           tokenIn,
           tokenOut,
+          tokenInMint: TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].mint,
+          tokenOutMint: TOKEN_MINTS[tokenOut as keyof typeof TOKEN_MINTS].mint,
           amountIn,
           status: OrderStatus.PENDING,
           retryCount: 0,

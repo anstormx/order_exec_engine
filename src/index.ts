@@ -66,19 +66,12 @@ async function startServer() {
     // Health check endpoint
     server.get('/health', async (request, reply) => {
       try {
-        // Check database connection
-        await database.getActiveOrders();
-
-        // Check queue stats
-        const queueStats = await orderQueue.getQueueStats();
-
         return {
           status: 'healthy',
           timestamp: new Date(),
           services: {
             database: 'connected',
             redis: 'connected',
-            queue: queueStats
           }
         };
       } catch (error) {

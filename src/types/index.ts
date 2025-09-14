@@ -3,6 +3,8 @@ export interface Order {
   type: OrderType;
   tokenIn: string;
   tokenOut: string;
+  tokenInMint: string;
+  tokenOutMint: string;
   amountIn: number;
   status: OrderStatus;
   createdAt: Date;
