@@ -5,13 +5,15 @@ import { SolanaConnectionManager } from './solanaConnection';
 import { Database } from '../database/connection';
 import { WebSocketManager } from './websocketManager';
 import { retryWithBackoff, sleep } from '../utils/errorHandler';
+import { OrderQueue } from './queue';
 
 export class OrderExecutionEngine {
   private dexRouter: dexRouter;
   // private dexRouter: MockDexRouter;
   private database: Database;
   private wsManager: WebSocketManager;
-
+  private orderQueue: OrderQueue | null = null;
+  
   constructor(database: Database, solanaManager: SolanaConnectionManager, wsManager: WebSocketManager) {
     this.database = database;
     this.dexRouter = new dexRouter(solanaManager);
@@ -19,6 +21,10 @@ export class OrderExecutionEngine {
     this.wsManager = wsManager;
 
     console.log('Order execution engine initialized');
+  }
+
+  public setOrderQueue(orderQueue: OrderQueue): void {
+    this.orderQueue = orderQueue;
   }
 
   /**
@@ -59,6 +65,10 @@ export class OrderExecutionEngine {
         await this.updateOrderStatus(order.id, OrderStatus.FAILED, {
           errorMessage: executionResult.error
         });
+
+        if (this.orderQueue && order.retryCount < 3) {
+          await this.orderQueue.addOrder(order);
+        }
       }
 
     } catch (error) {

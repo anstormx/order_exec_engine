@@ -56,6 +56,8 @@ async function startServer() {
       executionEngine
     );
 
+    executionEngine.setOrderQueue(orderQueue);
+
     // Register API routes
     await server.register(orderRoutes, {
       database,
