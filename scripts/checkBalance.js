@@ -5,7 +5,7 @@ const { Keypair } = require('@solana/web3.js');
 require('dotenv').config();
 
 const TOKEN_MINTS = {
-  USDC: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU', // Devnet USDC
+  USDC: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // Mainnet USDC
 };
 
 async function checkBalances() {

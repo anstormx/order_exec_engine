@@ -17,7 +17,6 @@ A high-performance DEX order execution engine for Solana that processes market o
 - [API Documentation](#api-documentation)
 - [WebSocket Protocol](#websocket-protocol)
 - [Testing](#testing)
-- [Deployment](#deployment)
 - [Performance](#performance)
 
 ## Features
@@ -68,7 +67,7 @@ A high-performance DEX order execution engine for Solana that processes market o
 5. **Database Layer**: PostgreSQL for persistence and audit trails
 6. **WebSocket Manager**: Real-time client communication
 
-## 🎯 Order Type Selection
+## Order Type Selection
 
 **Selected: Market Orders**
 
@@ -190,7 +189,7 @@ GET /api/orders/:orderId
 GET /health
 ```
 
-## 🔌 WebSocket Protocol
+## WebSocket Protocol
 
 Connect to WebSocket for real-time order updates:
 
@@ -258,33 +257,6 @@ npm run test:watch
 - Error Handling: Retry logic, circuit breakers
 - Integration: End-to-end order flows
 
-## Deployment
-
-### Docker Deployment
-
-```dockerfile
-# Dockerfile included for containerization
-docker build -t eterna-order-engine .
-docker run -p 3000:3000 eterna-order-engine
-```
-
-### Railway Deployment
-
-```bash
-# Deploy to Railway
-railway login
-railway init
-railway add postgresql redis
-railway deploy
-```
-
-### Environment Setup
-
-Ensure these services are configured:
-- PostgreSQL database with schema applied
-- Redis instance for queue management
-- Environment variables properly set
-
 ## Performance
 
 ### Throughput Metrics
@@ -296,8 +268,6 @@ Ensure these services are configured:
 
 ### Monitoring
 
-- Queue statistics via `/api/stats`
-- Order history tracking in database
 - WebSocket connection monitoring
 - Error rate tracking and alerting
 
@@ -309,7 +279,7 @@ The system is designed for horizontal scaling:
 - Database connection pooling
 - Circuit breaker pattern for external services
 
-## 🛠 Development
+## Development
 
 ### Project Structure
 
@@ -318,6 +288,7 @@ src/
 ├── types/           # TypeScript type definitions
 ├── services/        # Core business logic
 │   ├── dexRouter.ts           # DEX routing and price comparison
+│   ├── mockDexRouter.ts           # Mock DEX routing and price comparison 
 │   ├── orderExecutionEngine.ts # Order lifecycle management
 │   ├── queue.ts               # BullMQ queue management
 │   └── websocketManager.ts    # WebSocket connections

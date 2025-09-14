@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "8a2964e0-3ce8-4351-ba44-1354ad67da84",
+		"name": "eterna",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32399631"
+	},
+	"item": [
+		{
+			"name": "exec",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tokenIn\": \"SOL\",\r\n    \"tokenOut\": \"USDC\",\r\n    \"amountIn\": 0.001\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://orderexecengine-production.up.railway.app/api/orders/execute",
+					"protocol": "https",
+					"host": [
+						"orderexecengine-production",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"api",
+						"orders",
+						"execute"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exec local",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tokenIn\": \"SOL\",\r\n    \"tokenOut\": \"USDC\",\r\n    \"amountIn\": 0.001\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/orders/execute",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"execute"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status local",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/orders/0bd93e74-d0da-4948-b439-f192f864aa4a",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"0bd93e74-d0da-4948-b439-f192f864aa4a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://orderexecengine-production.up.railway.app/api/orders/0bd93e74-d0da-4948-b439-f192f864aa4a",
+					"protocol": "http",
+					"host": [
+						"orderexecengine-production",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"api",
+						"orders",
+						"0bd93e74-d0da-4948-b439-f192f864aa4a"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
