@@ -83,7 +83,7 @@ export class dexRouter {
     /**
      * Get quote from Raydium
      */
-    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: bigint): Promise<DexQuote> {
+    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: string): Promise<DexQuote> {
         console.log(`Getting Raydium quote: ${amount} ${tokenIn} -> ${tokenOut}`);
 
         try {
@@ -112,7 +112,7 @@ export class dexRouter {
     /**
      * Get quote from Meteora
      */
-    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: bigint): Promise<DexQuote> {
+    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: string): Promise<DexQuote> {
         try {
             console.log(`Getting Meteora quote: ${amount} ${tokenIn} -> ${tokenOut}`);
 
@@ -141,7 +141,7 @@ export class dexRouter {
     /**
      * Route order to the best DEX
      */
-    async selectBestDex(tokenIn: string, tokenOut: string, amount: bigint): Promise<RouteResult> {
+    async selectBestDex(tokenIn: string, tokenOut: string, amount: string): Promise<RouteResult> {
         console.log(`Routing order: ${amount} ${tokenIn} -> ${tokenOut}`);
 
         await this.initialize();
@@ -247,9 +247,7 @@ export class dexRouter {
             })
 
             const { txId } = await execute({ sendAndConfirm: true })
-            console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
-                txId: `https://explorer.solana.com/tx/${txId}`,
-            })
+            console.log('Swap transaction signature: https://solscan.io/tx/' + txId);
 
             return {
                 success: true,
@@ -289,7 +287,7 @@ export class dexRouter {
             swapTx.sign(this.solanaManager.wallet);
             const sig = await this.solanaManager.connection.sendRawTransaction(swapTx.serialize());
 
-            console.log('Swap transaction signature:', sig);
+            console.log('Swap transaction signature: https://solscan.io/tx/' + sig);
 
             return {
                 success: true,

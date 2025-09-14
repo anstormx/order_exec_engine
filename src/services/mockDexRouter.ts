@@ -17,7 +17,7 @@ export class MockDexRouter {
     basePriceInUsdc = 250;
     basePriceInSol = 0.004;
     
-    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: bigint) {
+    async getRaydiumQuote(tokenIn: string, tokenOut: string, amount: string) {
         // Simulate network delay
         await sleep(200 + Math.random() * 100);
 
@@ -28,7 +28,7 @@ export class MockDexRouter {
         };
     }
 
-    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: bigint) {
+    async getMeteoraQuote(tokenIn: string, tokenOut: string, amount: string) {
         // Simulate network delay
         await sleep(200 + Math.random() * 100);
 
@@ -39,7 +39,7 @@ export class MockDexRouter {
         };
     }
 
-    async selectBestDex(tokenIn: string, tokenOut: string, amount: bigint) {
+    async selectBestDex(tokenIn: string, tokenOut: string, amount: string) {
         // Get quotes from both DEXs
         const [raydiumQuote, meteoraQuote] = await Promise.all([
             this.getRaydiumQuote(tokenIn, tokenOut, amount),
@@ -51,8 +51,8 @@ export class MockDexRouter {
         const meteoraEffective = meteoraQuote.price * (1 - meteoraQuote.fee);
 
         // Calculate output amounts
-        const raydiumOutput = amount * BigInt(Math.floor(raydiumEffective));
-        const meteoraOutput = amount * BigInt(Math.floor(meteoraEffective));
+        const raydiumOutput = BigInt(amount) * BigInt(Math.floor(raydiumEffective));
+        const meteoraOutput = BigInt(amount) * BigInt(Math.floor(meteoraEffective));
 
         // Determine best DEX based on output amount
         const isRaydiumBetter = raydiumOutput > meteoraOutput;
@@ -117,7 +117,7 @@ export class MockDexRouter {
         // Calculate final execution price with slippage (simulate 0-0.5% additional slippage)
         const slippageFactor = 1 - (Math.random() * 0.005);
         const finalPrice = finalQuote.price * slippageFactor;
-        const actualAmountOut = order.amountIn * BigInt(finalPrice);
+        const actualAmountOut = BigInt(order.amountIn) * BigInt(finalPrice);
 
         console.log(`Swap completed`);
         console.log(`Transaction: ${txHash}`);

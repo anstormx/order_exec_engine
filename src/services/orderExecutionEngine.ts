@@ -187,7 +187,7 @@ export class OrderExecutionEngine {
       return { isValid: false, error: 'Input and output tokens must be different' };
     }
 
-    if (order.amountIn <= 0) {
+    if (BigInt(order.amountIn) <= BigInt(0)) {
       return { isValid: false, error: 'Amount must be greater than zero' };
     }
 

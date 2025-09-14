@@ -30,13 +30,13 @@ export class Database {
     
     const values = [
       order.id,
-      order.type.toString(),
+      order.type,
       order.tokenIn,
       order.tokenOut,
       order.tokenInMint,
       order.tokenOutMint,
-      order.amountIn.toString(),
-      order.status.toString(),
+      order.amountIn,
+      order.status,
       order.retryCount,
       order.createdAt,
       order.updatedAt
@@ -74,7 +74,7 @@ export class Database {
       `;
 
       await client.query(updateQuery, [
-        status.toString(),
+        status,
         data?.txHash,
         data?.executedAt,
         data?.errorMessage,

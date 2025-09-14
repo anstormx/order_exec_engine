@@ -39,7 +39,7 @@ export async function orderRoutes(
           tokenOut,
           tokenInMint: TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].mint,
           tokenOutMint: TOKEN_MINTS[tokenOut as keyof typeof TOKEN_MINTS].mint,
-          amountIn: ethers.parseUnits(amountIn.toString(), TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].decimals),
+          amountIn: ethers.parseUnits(amountIn.toString(), TOKEN_MINTS[tokenIn as keyof typeof TOKEN_MINTS].decimals).toString(),
           status: OrderStatus.PENDING,
           retryCount: 0,
           createdAt: new Date(),
