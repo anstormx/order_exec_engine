@@ -117,7 +117,7 @@ export class MockDexRouter {
         // Calculate final execution price with slippage (simulate 0-0.5% additional slippage)
         const slippageFactor = 1 - (Math.random() * 0.005);
         const finalPrice = finalQuote.price * slippageFactor;
-        const actualAmountOut = BigInt(order.amountIn) * BigInt(finalPrice);
+        const actualAmountOut = BigInt(order.amountIn) * BigInt(Math.floor(finalPrice));
 
         console.log(`Swap completed`);
         console.log(`Transaction: ${txHash}`);

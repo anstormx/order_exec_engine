@@ -16,7 +16,7 @@ describe('MockDexRouter - Routing Logic Tests', () => {
     });
 
     test('should get Raydium quote with correct structure', async () => {
-        const quote = await router.getRaydiumQuote();
+        const quote = await router.getRaydiumQuote('SOL', 'USDC', '10');
 
         expect(quote).toHaveProperty('price');
         expect(quote).toHaveProperty('fee');
@@ -27,7 +27,7 @@ describe('MockDexRouter - Routing Logic Tests', () => {
     });
 
     test('should get Meteora quote with correct structure', async () => {
-        const quote = await router.getMeteoraQuote();
+        const quote = await router.getMeteoraQuote('SOL', 'USDC', '10');
 
         expect(quote).toHaveProperty('price');
         expect(quote).toHaveProperty('fee');
@@ -38,7 +38,7 @@ describe('MockDexRouter - Routing Logic Tests', () => {
     });
 
     test('should select best DEX based on effective price calculation', async () => {
-        const result = await router.selectBestDex('SOL', 'USDC', 10);
+        const result = await router.selectBestDex('SOL', 'USDC', '10');
 
         expect(result).toHaveProperty('dex');
         expect(result).toHaveProperty('bestQuote');
@@ -48,11 +48,11 @@ describe('MockDexRouter - Routing Logic Tests', () => {
         expect(['raydium', 'meteora']).toContain(result.dex);
         expect(result.allQuotes).toHaveLength(2);
         expect(result.routingReason).toContain(result.dex);
-        expect(result.routingReason).toContain('better');
+        expect(result.routingReason).toContain('more');
     });
 
     test('should include both DEX quotes in routing result', async () => {
-        const result = await router.selectBestDex('SOL', 'USDC', 5);
+        const result = await router.selectBestDex('SOL', 'USDC', '5');
 
         const raydiumQuote = result.allQuotes.find(q => q.dex === 'raydium');
         const meteoraQuote = result.allQuotes.find(q => q.dex === 'meteora');
@@ -69,7 +69,9 @@ describe('MockDexRouter - Routing Logic Tests', () => {
             type: OrderType.MARKET,
             tokenIn: 'SOL',
             tokenOut: 'USDC',
-            amountIn: 1,
+            tokenInMint: 'So11111111111111111111111111111111111111112',
+            tokenOutMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            amountIn: '1',
             status: OrderStatus.PENDING,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -93,7 +95,9 @@ describe('MockDexRouter - Routing Logic Tests', () => {
             type: OrderType.MARKET,
             tokenIn: 'SOL',
             tokenOut: 'USDC',
-            amountIn: 1,
+            tokenInMint: 'So11111111111111111111111111111111111111112',
+            tokenOutMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            amountIn: '1',
             status: OrderStatus.PENDING,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -119,7 +123,9 @@ describe('MockDexRouter - Routing Logic Tests', () => {
             type: OrderType.MARKET,
             tokenIn: 'SOL',
             tokenOut: 'USDC',
-            amountIn: 1,
+            tokenInMint: 'So11111111111111111111111111111111111111112',
+            tokenOutMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            amountIn: '1',
             status: OrderStatus.PENDING,
             createdAt: new Date(),
             updatedAt: new Date(),
