@@ -35,10 +35,10 @@ async function startServer() {
 
     const solanaManager = new SolanaConnectionManager(SOLANA_RPC_URL, PRIVATE_KEY);
 
-    // Verify connection and wallet balance
+    // Verify connection
     const isReady = await solanaManager.checkConnection();
     if (!isReady) {
-      throw new Error('Solana connection failed or insufficient balance');
+      throw new Error('Solana connection failed');
     }
 
     const wsManager = new WebSocketManager(server, database);

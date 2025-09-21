@@ -48,21 +48,6 @@ export class WebSocketManager {
           console.error(`WebSocket error for order ${orderId}:`, error);
           self.connections.delete(orderId);
         });
-
-        // Handle incoming messages (optional - for client acknowledgments)
-        socket.on('message', (message: Buffer) => {
-          try {
-            const data = JSON.parse(message.toString());
-            console.log(`Received message for order ${orderId}:`, data);
-            
-            // Handle client acknowledgments or requests
-            if (data.type === 'ping') {
-              socket.send(JSON.stringify({ type: 'pong', timestamp: new Date() }));
-            }
-          } catch (error) {
-            console.error(`Error parsing WebSocket message for order ${orderId}:`, error);
-          }
-        });
       });
     });
   }

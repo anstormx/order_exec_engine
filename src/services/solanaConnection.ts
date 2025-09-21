@@ -27,10 +27,6 @@ export class SolanaConnectionManager {
     try {
       const version = await this.connection.getVersion();
       console.log(`Solana version: ${version['solana-core']}`);
-
-      const balance = await this.getBalance();
-      console.log(`Wallet SOL balance: ${balance} SOL`);
-
       return true;
     } catch (error) {
       console.error('Failed to connect to Solana:', error);
