@@ -6,7 +6,7 @@ A high-performance DEX order execution engine for Solana that processes market o
 
 **Public URL**: https://orderexecengine-production.up.railway.app/
 
-**Demo Video**: [YouTube Demo Link - Coming Soon]
+**Demo Video**: https://youtu.be/9tN3yIfnwrA
 
 **USDC -> SOL**: https://solscan.io/tx/rRAXAhH4ppdSH2idnDQZSnCdfCJe3dkAGw79KcvaUyn4irWZkY9SAdimMzw2qjTRxNk8X1MLwzvAx9waF87Xabz
 
